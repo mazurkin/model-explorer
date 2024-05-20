@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+set -o monitor
+set -o noglob
+
+conda run --no-capture-output --live-stream --name model-explorer \
+    model-explorer "$@"
+

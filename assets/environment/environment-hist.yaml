@@ -1,0 +1,5 @@
+name: model-explorer
+channels:
+  - defaults
+dependencies:
+  - python=3.10.12
