@@ -15,13 +15,7 @@ APPLICATION_HOST   ?= 0.0.0.0
 APPLICATION_PORT   ?= 8080
 APPLICATION_FOLDER ?= /tmp/model-explorer
 
-# -----------------------------------------------------------------------------
-# welcome
-# -----------------------------------------------------------------------------
-
-.PHONY: info
-info:
-	@echo "Model explorer: $(ROOT)"
+.DEFAULT_GOAL = docker-run
 
 # -----------------------------------------------------------------------------
 # conda environment

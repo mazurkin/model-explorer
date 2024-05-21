@@ -25,7 +25,7 @@ dependencies:
   - xz=5.4.6=h5eee18b_1
   - zlib=1.2.13=h5eee18b_1
   - pip:
-      - ai-edge-model-explorer==0.1.0
+      - ai-edge-model-explorer==0.1.1
       - ai-edge-model-explorer-adapter==0.1.1
       - asttokens==2.4.1
       - blinker==1.8.2
