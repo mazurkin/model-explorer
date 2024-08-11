@@ -17,7 +17,7 @@ APPLICATION_FOLDER ?= /tmp/model-explorer
 # run
 # -----------------------------------------------------------------------------
 
-.DEFAULT_GOAL = run
+.DEFAULT_GOAL = docker-run
 
 .PHONY: run
 run:
