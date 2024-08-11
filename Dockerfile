@@ -6,6 +6,10 @@ RUN apt-get -y update \
   && apt-get -y install curl \
   && apt-get clean
 
+# user
+RUN groupadd --gid 1000 conda \
+ && useradd --uid 1000 --gid 1000 conda
+
 # conda
 ARG CONDA_VERSION=py310_24.3.0-0
 RUN mkdir -p '/opt/miniconda' \
@@ -19,17 +23,19 @@ RUN conda install -n base conda-libmamba-solver \
  && conda config --set solver libmamba
 
 # conda environment
-COPY assets/environment/environment-full.yaml /tmp/environment.yaml
-RUN conda env create -q -f /tmp/environment.yaml
+RUN conda create --yes --name model-explorer python=3.10.12 conda-forge::poetry=1.8.3
 
 # fix libstd lookup
 RUN rm /opt/miniconda/envs/model-explorer/lib/libstdc++.so.6.0.29 \
  && ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30 /opt/miniconda/envs/model-explorer/lib/libstdc++.so \
  && ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30 /opt/miniconda/envs/model-explorer/lib/libstdc++.so.6
 
-# required packages and folders
-RUN groupadd --gid 1000 conda \
- && useradd --uid 1000 --gid 1000 conda
+# copy dependency control
+COPY poetry.lock pyproject.toml /tmp/environment/poetry/
+
+# install dependencies
+RUN cd /tmp/environment/poetry/ \
+ && conda run --no-capture-output --live-stream --name model-explorer poetry install --no-root
 
 # files
 COPY bin /opt/model-explorer/bin

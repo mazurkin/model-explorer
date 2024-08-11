@@ -8,34 +8,44 @@ DOCKER_NAME    = model-explorer
 DOCKER_VERSION = 0.1
 
 CONDA_ENV_NAME = model-explorer
-CONDA_ENV_FULL_FILE = assets/environment/environment-full.yaml
-CONDA_ENV_HIST_FILE = assets/environment/environment-hist.yaml
 
 APPLICATION_HOST   ?= 0.0.0.0
 APPLICATION_PORT   ?= 8080
 APPLICATION_FOLDER ?= /tmp/model-explorer
 
-.DEFAULT_GOAL = docker-run
+# -----------------------------------------------------------------------------
+# run
+# -----------------------------------------------------------------------------
+
+.DEFAULT_GOAL = run
+
+.PHONY: run
+run:
+	@bin/model-explorer-bootstrap
 
 # -----------------------------------------------------------------------------
 # conda environment
 # -----------------------------------------------------------------------------
 
+.PHONY: env-init
+env-init:
+	@conda create --yes --name $(CONDA_ENV_NAME) python=3.10.12 conda-forge::poetry=1.8.3
+
 .PHONY: env-create
 env-create:
-	@conda env create --file $(CONDA_ENV_FULL_FILE)
+	@conda run --no-capture-output --live-stream --name $(CONDA_ENV_NAME) poetry install --no-root --no-directory
 
 .PHONY: env-update
 env-update:
-	@conda env update --file $(CONDA_ENV_FULL_FILE)
+	@conda run --no-capture-output --live-stream --name $(CONDA_ENV_NAME) poetry update
 
 .PHONY: env-remove
 env-remove:
-	@conda env remove --name $(CONDA_ENV_NAME) --yes
+	@conda env remove --yes --name $(CONDA_ENV_NAME)
 
-.PHONY: env-init
-env-init:
-	@conda create --name $(CONDA_ENV_NAME) python=3.10.12
+.PHONY: env-shell
+env-shell:
+	@conda run --no-capture-output --live-stream --name $(CONDA_ENV_NAME) bash
 
 .PHONY: env-info
 env-info:
@@ -44,19 +54,6 @@ env-info:
 .PHONY: env-list
 env-list:
 	@conda run --no-capture-output --live-stream --name $(CONDA_ENV_NAME) conda list
-
-.PHONY: env-snapshot-history
-env-snapshot-history:
-	@conda run --no-capture-output --live-stream --name $(CONDA_ENV_NAME) conda env export --from-history \
-		| grep -v "^prefix: " > "$(CONDA_ENV_HIST_FILE)"
-
-.PHONY: env-snapshot-full
-env-snapshot-full:
-	@conda run --no-capture-output --live-stream --name $(CONDA_ENV_NAME) conda env export \
-		| grep -v "^prefix: " > "$(CONDA_ENV_FULL_FILE)"
-
-.PHONY: env-snapshot
-env-snapshot: env-snapshot-full env-snapshot-history
 
 # -----------------------------------------------------------------------------
 # docker
