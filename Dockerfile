@@ -31,7 +31,7 @@ RUN rm /opt/miniconda/envs/model-explorer/lib/libstdc++.so.6.0.29 \
  && ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30 /opt/miniconda/envs/model-explorer/lib/libstdc++.so.6
 
 # copy dependency control
-COPY poetry.lock pyproject.toml /tmp/environment/poetry/
+COPY poetry.lock pyproject.toml poetry.toml /tmp/environment/poetry/
 
 # install dependencies
 RUN cd /tmp/environment/poetry/ \
