@@ -66,7 +66,6 @@ docker-prune:
 .PHONY: docker-build
 docker-build: docker-prune
 	@docker build \
-		--no-cache \
 		--progress=plain \
 		-t ${DOCKER_NAME}:${DOCKER_VERSION} \
 		.
